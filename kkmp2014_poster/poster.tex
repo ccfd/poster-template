@@ -1,0 +1,183 @@
+%\documentclass[plainboxedsections]{sciposter}
+\documentclass[plainboxedsections, 25pt, a1]{sciposter}
+
+\usepackage{fancybox}
+
+\usepackage{epsfig}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{multicol}
+\usepackage{sectionbox}
+
+
+\newtheorem{Def}{Definition}
+\renewcommand{\titlesize}{\LARGE}
+
+%\newtheorem{Def}{Definition}
+
+\usepackage{fancyhdr}
+%\usepackage{dsfont}
+\usepackage{graphicx}
+%\usepackage[utf8]{inputenc}
+%\usepackage[T1]{fontenc}
+%\usepackage{multirow}
+
+\usepackage{graphicx}
+
+\leftlogo[1]{ccfd3.png}
+\rightlogo[1]{logo_PW.png}
+\title{Generalized Pattern Glupoty Sensitive to  Information Pitupitu}
+\author{Jan Kowalski}
+\institute{Department of Aerodynamics\\
+Institute of Aeronautics and Applied Mechanics \\
+Warsaw University of Technology 
+}
+%\email{michael@cs.rug.nl}
+
+
+\definecolor{mainCol}{RGB}{230,230,230} %dark blue
+%\definecolor{TextCol}{rgb}{1.0,1.0,0.5} %white
+\definecolor{SectionCol}{RGB}{255,255,255} %orange
+\definecolor{BoxCol}{RGB}{2,153,6} %white
+
+
+
+
+%\definecolor{sectboxrulecol}{%rgb}{0,0,0.5}
+
+\definecolor{sectboxfillcol}{RGB}{230,230,230} 
+\definecolor{sectboxrulecol}{RGB}{224,224,224}  
+%\definecolor{sectboxtextcol}{%rgb}{0,0,1}
+%\definecolor{subsectboxrulecol}{%rgb}{0,0.5,0}
+%\definecolor{subsectboxfillcol}{%rgb}{0.9,1,0.9}
+%\definecolor{subsectboxtextcol}{%rgb}{0,1,0}
+%\definecolor{subsubsectboxrulecol}{%rgb}{0.5,0,0}
+%\definecolor{subsubsectboxfillcol}{%rgb}{1,0.9,0.9}
+%\definecolor{subsubsectboxtextcol}{%rgb}{1,0,0}
+
+
+\renewcommand{\headrulewidth}{0pt}
+
+
+\begin{document}
+\lfoot{\includegraphics[width=0.16\textwidth]{pokl.png}}
+\cfoot{{\bf KKMP 2014}, XXI Fluid Mechanics Conference, Krakow, Poland }
+\rfoot{\includegraphics[width=0.16\textwidth]{ue.png}}
+%\setlength{\footskip}{3cm}
+\pagestyle{fancy}
+
+
+
+
+\maketitle
+
+%\renewcommand{\footlogo}{\includegraphics[width=1.0\textwidth]{poklue.png}}
+%\conference{{\bf KKMP 2014}, XXI Fluid Mechanics Conference, Krakow, Poland}
+
+
+\begin{abstract}
+In this paper authors present Residual Distribution Scheme (RDS) applied for solving general time-dependent hyperbolic conservation laws on unstructured meshes in 2D. 
+	The RDS has few important advantages over Finite Volume Method (FVM) and Finite Element Method (FEM) which motivates our investigation of this method. Compared to second order FVM, RDS uses compact nearest-neighbour stencil. In order to satisfy monotonicity condition FEM uses additional shock capturing terms, which has adjustable constants hard to define in general way. RDS framework (also called Fluctuation Splitting) allows to construct parameter free second-order accurate schemes that have compact stencil. Moreover these schemes are also less dissipative compared to FVM and FEM.
+	Several numerical results are shown in this paper. To make an introduction and give some geometrical interpretation of method, steady and unsteady advection equation is considered firstly. As the aim of this paper is to solve hyperbolic conservation laws, Euler equations for a perfect gas are then taken into account. The example results for 2-dimensional Riemann problem obtained with first and second order RDS are shown on Figure 1.
+	Methodology presented here allows to solve general partial differential equations, even highly non-linear in an accurate and compact manner.
+\end{abstract}
+
+
+
+\begin{multicols}{3}
+
+
+
+
+
+
+%\begin{sectionbox}{Introduction}
+\section{Introduction}
+
+
+
+ 
+
+\PARstart{G}{ranulometries} are ordered sets of morphological openings or closings, each of
+which removes image details below a certain size. These can be used for texture
+analysis
+through the use of \emph{pattern spectra}, which show how the number of 
+foreground pixels in the image changes as a function of the size parameter 
+\cite{maragos89:_patter}.
+A drawback of the classical definition of pattern spectra is that spatial 
+information is not included in a pattern spectrum as shown below.
+ In this paper, \emph{spatial pattern spectra} are developed which retain information on the distribution of these details at different scales.
+
+The origins of the Little Red Riding Hood story can be traced to versions from various European countries and more than likely preceding the 17th century, of which several exist, some significantly different from the currently known, Grimms-inspired version. It was told by French peasants in the 10th century.[1] In Italy, the Little Red Riding Hood was told by peasants in 14th century, where a number of versions exist, including La finta nonna (The False Grandmother).[7] It has also been called "The Story of Grandmother". It is also possible that this early tale has roots in very similar Oriental tales (e.g. "Grandaunt Tiger").[8]
+
+These early variations of the tale differ from the currently known version in several ways. The antagonist is not always a wolf, but sometimes an ogre or a 'bzou' (werewolf), making these tales relevant to the werewolf-trials (similar to witch trials) of the time (e.g. the trial of Peter Stumpp).[9] The wolf usually leaves the grandmother’s blood and meat for the girl to eat, who then unwittingly cannibalizes her own grandmother. Furthermore, the wolf was also known to ask her to remove her clothing and toss it into the fire.[10] In some versions, the wolf eats the girl after she gets into bed with him, and the story ends there.[11] In others, she sees through his disguise and tries to escape, complaining to her "grandmother" that she needs to defecate and would not wish to do so in the bed. The wolf reluctantly lets her go, tied to a piece of string so she does not get away. However, the girl slips the string over something else and runs off.
+
+In these stories she escapes with no help from any male or older female figure, instead using her own cunning. Sometimes, though more rarely, the red hood is even non-existent.
+ 
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{burzawszklance.png}
+\end{center}
+\caption{ Parts (a) through (c) show three images consisting of squares of
+different sizes;
+(d) shows the pattern spectra, denoting the number of foreground pixels 
+ removed by openings by reconstruction by $\lambda \times \lambda$ squares. No 
+granulometry is capable of separating the patterns, because the only 
+differences between the images lie in the distributions of the 
+connected components. }\label{fig:blocks}
+\end{figure} 
+
+%\end{sectionbox}
+ 
+\section{Pitupitu}
+\PARstart{G}{ranulometries} are ordered sets of morphological openings or closings, each of
+which removes image details below a certain size. These can be used for texture
+analysis
+through the use of \emph{pattern spectra}, which show how the number of 
+foreground pixels in the image changes as a function of the size parameter 
+\cite{maragos89:_patter}.
+A drawback of the classical definition of pattern spectra is that spatial 
+information is not included in a pattern spectrum as shown below.
+ In this paper, \emph{spatial pattern spectra} are developed which retain information on the distribution of these details at different scales.
+ 
+
+%Let binary images $X$ and $Y$ be defined as a subset of the image domain 
+%${\mathbf M}\subset {\mathbb Z}^n$ or ${\mathbb R}^n$ (usually $n=2$). 
+
+
+A binary 
+granulometry is a set of operators $\{\alpha_r\}$ with $r$ from some ordered 
+set $\Lambda$ (usually $\Lambda \subset {\mathbb R}$ or ${\mathbb Z}$), with 
+the following three properties
+\begin{align}
+   \alpha_r(X) & \subset  X \label{eq:antiext} \\
+   X \subset Y & \Rightarrow \alpha_r(X) \subset \alpha_r(Y) 
+   \label{eq:increasing} \\
+   \alpha_r(\alpha_s(X)) & =  \alpha_{\max(r,s)}(X) \label{eq:idempot},
+\end{align}   
+for all $r,s \in \Lambda$.
+
+
+ 
+ 
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{burzawszklance.png}
+\end{center}
+\caption{ Parts (a) through (c) show three images consisting of squares of
+different sizes;
+(d) shows the pattern spectra, denoting the number of foreground pixels 
+ removed by openings by reconstruction by $\lambda \times \lambda$ squares. No 
+granulometry is capable of separating the patterns, because the only 
+differences between the images lie in the distributions of the 
+connected components. }\label{fig:blocks}
+\end{figure} 
+
+\end{multicols}
+
+
+%\includegraphics[width=1.0\textwidth]{poklue.png}
+
+
+\end{document}
