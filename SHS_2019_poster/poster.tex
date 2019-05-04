@@ -137,8 +137,7 @@ Using Lattice Boltzmann method}
 \begin{block}{Introduction}
 Super Hydrophobic Surfaces (SHS) have been of interest to researchers for many years, because of their ability to reduce drag and maintain the surface to be dry and clean, and a large variety of methods have been applied to study their phenomena. 
 The lattice Boltzmann method, thanks to its mesoscopic nature is a suitable candidate to simulate the intermolecular interactions responsible for the interfacial flows in a microscale. 
-Additionally, the LBM is relatively easy in implementation and able to handle complex geometries such as porous media or rough surface. Computations are performed locally, thus the algorithm can be parallelized in a straightforward manner.  
-In this contribution, we present a conservative, phase-field model for simulation of immiscible multiphase flows using an incompressible, velocity based Cascaded Lattice Boltzmann Method (CLBM). 
+In this contribution, we present a conservative, phase-field model for simulation of immiscible multiphase flows using an incompressible, velocity based Cascaded Lattice Boltzmann Method. 
 As a study case, we present a simulation of a SHS.
 %Generally, the super hydrophobic effect comes from both chemical interaction and surface shape in a microscale.
 %The principle of work is based on the fact, that the tiny air-bubbles are entrapped into the microstructure of the surface being in the contact with fluids which is  sliding on them. 
@@ -157,7 +156,8 @@ As a study case, we present a simulation of a SHS.
 \end{columns}
 
 \begin{columns}[T]
-\begin{column}{.2975\textwidth}
+%\begin{column}{.2975\textwidth}
+\begin{column}{.32\textwidth}
 
 \begin{block}{How SHS works?}
 \begin{multicols}{2}
@@ -196,72 +196,144 @@ Higher values observed in a macro scale can be achieved only by additional micro
 \end{figure}
 \end{multicols}
 To support a thin layer of air, an array of posts or ridges is usually applied.
-Such symmetric structures are expensive to manufacture and not common in nature. 
-However, experiments show that an unstructured rough surface can work as well as regularly spaced arrays of ridges or posts.
+Such symmetric structures are expensive to manufacture, fragile and not common in nature. 
+However, experiments have shown that an unstructured, rough surface can work as well as regularly spaced arrays of ridges or posts.
 %Gogte et al. \cite{Gogte2005} showed that an unstructured rough surface can work as well as regularly spaced arrays of ridges or posts. Later, an analytical model was developed by  Nosonovsky and Bhushan \cite{Nosonovsky2007a}. 
 %Due to its mesoscale nature, LBM can easily capture the effect of random roughness.
 %It has been successfully applied by Kuner and Harting \cite{Kunert2008} to study effective wall position. More recently, Yuan and Zhang \cite{Yuan2017} investigated droplets impacting a randomly distributed rough surface.
 \end{block}
 
 
-
 \end{column}
 
-\begin{column}{.2975\textwidth}
+%\begin{column}{.2975\textwidth}
+\begin{column}{.605 \textwidth}
 \begin{block}{Governing Equations}
-
-We simulate an incompressible, non-miscible, multiphase flow. \newline
-The continuity and momentum equations are:
+We simulate an incompressible, non-miscible, multiphase flow.
+\begin{multicols}{2}
+\textbf{Hydrodynamics}\\
+The continuity and momentum equations are,
 \begin{eqnarray}  
 \left\{
 	\begin{array}{ll}
 \frac{\partial \rho}{\partial t} + \nabla \cdot \rho \textbf{u} = 0 \\
-\rho\left( \frac{\partial \textbf{u} }{\partial t} + \textbf{u} \cdot \nabla \textbf{u}\right) = -\nabla p + \nabla \cdot (\mu[ \nabla \textbf{u} + (\nabla \textbf{u})^\top]) + \textbf{F}_s + \textbf{F}_b 
+\rho\left( \frac{\partial \textbf{u} }{\partial t} + \textbf{u} \cdot \nabla \textbf{u}\right) = -\nabla p + \nabla \cdot (\mu[ \nabla \textbf{u} + (\nabla \textbf{u})^\top]) + \textbf{F}_s + \textbf{F}_b .
 	\end{array}\nonumber 
 \right.
 \end{eqnarray}
-
-Forcing terms:
+Forcing terms are given as,
 \begin{eqnarray}  
      \boldsymbol{F}_s = \mu_{\phi}\nabla \phi        		 \hspace{1.5em};\hspace{1.5em} 
-     \boldsymbol{F}_b = [G_X, G_Y]^\top \nonumber
+     \boldsymbol{F}_b = [G_X, G_Y]^\top . \nonumber
 \end{eqnarray} 
 
+\columnbreak 
+
+\textbf{Phase-field}\\
+Interface tracking is realized using the phase-field approach,
+\begin{eqnarray}
+\frac{\partial \phi}{\partial t} + \nabla \cdot \phi \textbf{u}
+=
+\nabla \cdot M
+\left( 
+\nabla \phi - 
+  %\underbrace{
+  \frac{\nabla \phi}{|\nabla \phi|} \frac{[1-4(\phi - \phi_0)^2]}{\gamma} 
+  %}_{Force \, term} 
+\right). \nonumber
+\end{eqnarray}
+The interface is located in $ \phi_0 =(\phi_H + \phi_L)/2  $. \\
+Density is a linear interpolation between $\rho_H$ and $\rho_L$,
+\begin{eqnarray}
+\rho = \rho_L +  \frac{\phi - \phi_L}{\phi_H - \phi_L}(\rho_H -\rho_L).  \nonumber
+\end{eqnarray}
+`Advection - Diffusion` of  $\phi$ is solved on a separate D2Q9 lattice.% \\ \vspace{1.5em}
+\end{multicols}
 \end{block}
 
-\begin{block}{Lattice Boltzmann Method}
-\end{block}
+\begin{block}{Lattice Boltzmann Method - Algorithm}
+\begin{multicols}{2}
+The raw moments and central moments are defined as,
+\begin{eqnarray}
+\Upsilon_{mn} &=& \sum_{\alpha}(e_{\alpha x})^m ( e_{\alpha y})^n f_{\alpha} \nonumber \label{eq:raw_mom_def} \\
+\tilde{\Upsilon}_{mn} &=& \sum_{\alpha} ( e_{\alpha x} - u_x)^m ( e_{\alpha y} - u_y)^n f_{\alpha} \nonumber \label{eq:cm_mom_def}
+\end{eqnarray}
+Pressure and velocity are interpreted as zeroth and first moment respectively,
+\begin{eqnarray} 
+p^{*} &=& \Upsilon_{00} = \sum_\alpha f_\alpha,  \nonumber % \hspace{2em} \text{- normalized pressure} 
+ \\
+\textbf{u} &=& [u_x, u_y]^\top = [ \Upsilon_{10}, \Upsilon_{01}]^\top 
+= \sum_\alpha f_\alpha \textbf{e}_\alpha + \frac{\textbf{F}}{2 \rho} \delta t. \nonumber 
+% \hspace{2em} \text{- macroscopic velocity} 
+\end{eqnarray}
+\columnbreak
+\begin{figure}[H]
+   \includegraphics[width= 1 \textwidth]{Images/latticeVelocities_concept.png} 
+   \caption{Concept of lattice velocities}
+   \label{fig:latticeVelocities_concept}
+\end{figure}
+\end{multicols}
 
-\begin{block}{Algorithm: hydrodynamics}
-\textit{1} Initialize $ \boldsymbol{f}(\textbf{x}, t)  $ \\ \vspace{2.5em}
+%The simplest, single relaxation scheme reads:
+%
+%\begin{multicols}{2}
+%\begin{eqnarray} 
+%  \underbrace{ f_i(\boldsymbol{x}+ \boldsymbol{e_i} \Delta {\boldsymbol{x}}, t +  \Delta {t} ) }_{Streaming} =
+%  \underbrace{ f_i(\boldsymbol{x}, t ) - \frac{1}{\tau } ( f_i - f_i^{eq}) + F_i(\boldsymbol{x}, t ) }_{Collision} \nonumber
+%\end{eqnarray}
+%\begin{itemize}
+%\item  $\tau = \tau(\nu)$ relaxation parameter, $\nu$ is the kinematic viscosity 
+%\item $f_i$ - discrete probability distribution function
+%\item $F_i$ - source term (ex. gravity force)
+%\end{itemize}
+%\columnbreak
+%\begin{figure}[H]
+%   \includegraphics[width= 1 \textwidth]{Images/streaming.png} 
+%   \caption{D2Q9: Streaming}
+%   \label{fig:Streaming}
+%\end{figure}
+%\begin{figure}[H]
+%   \includegraphics[width= 1 \textwidth]{Images/latticeVelocities_concept.png} 
+%   \caption{Concept of lattice velocities}
+%   \label{fig:latticeVelocities_concept}
+%\end{figure}
+%\end{multicols}
+
+We introduce improvements to the LB equations for interface tracking and incompressible hydrodynamics, by transforming the operations into the central moment space. 
+The relaxation of central moments is defined in a reference frame moving with the fluid. %, while the commonly used multiple-relaxation time scheme performs collision in a fixed reference frame. 
+As a consequence, Galilean invariance and stability of the method is improved.
+\begin{multicols}{2}
+\textbf{Hydrodynamics}\\
+\textit{1} Initialize $ \boldsymbol{f}(\textbf{x}, t)  $, \\ \vspace{1.em}
 
 \textit{2} Compute 
 $\textbf{u} = [u_x, u_y]^\top = [ k_{10}, k_{01}]^\top 
-= \sum_\alpha f_\alpha \textbf{e}_\alpha + \frac{\textbf{F}}{2 \rho} \delta t \nonumber  $ \\ \vspace{2.5em}
+= \sum_\alpha f_\alpha \textbf{e}_\alpha + \frac{\textbf{F}}{2 \rho} \delta t \nonumber  $, \\ \vspace{1.em}
 
 \textit{3} Compute \linebreak
 $\boldsymbol{\tilde{\Upsilon}}(\boldsymbol{x},t)
 =\mathbb{N}\mathbb{M}\textbf{f}(\boldsymbol{x},t)$, 
 \hspace{1em}
 $\boldsymbol{\tilde{\Upsilon}}^{eq}(\boldsymbol{x},t)=$..., \hspace{1em} 
-$\tilde{\textbf{F}}(\boldsymbol{x},t)=$... 
-\\ \vspace{2.5em}
+$\tilde{\textbf{F}}(\boldsymbol{x},t)=$...,
+\\ \vspace{1.em}
  
 \textit{4} Collision  \linebreak
 $\boldsymbol{\tilde{\Upsilon}}^{*}(\textbf{x}, t) =  
 (\mathbbm{1} - \mathbb{S})\boldsymbol{\tilde{\Upsilon}} + \mathbb{S} \boldsymbol{\tilde{\Upsilon}}^{eq}  + (\mathbbm{1} - \mathbb{S}/2)\tilde{\textbf{F}}, 
 $
-\\ \vspace{2.5em}
+\\ \vspace{1.em}
 
 \textit{5} Streaming  \linebreak
 $
 \boldsymbol{f}(\textbf{x} + \textbf{e}\delta t, t + \delta t ) 
 = \mathbb{M}^{-1} \mathbb{N}^{-1} \boldsymbol{\tilde{\Upsilon}}^{*}(\textbf{x}, t).
 $ 
-\end{block}
-\end{column}
 
-\begin{column}{.2975\textwidth}
+%\end{block}
+%\end{column}
+%
+%\begin{column}{.2975\textwidth}
 
 %\begin{block}{Advection-diffusion equation revisited}
 %The separation flux, $\textbf{j}_S$, is supposed to counteract the diffusion and reach a predefined interface profile in the equilibrium state:
@@ -306,73 +378,52 @@ $
 %\end{align*}
 %\end{block}
 
-\begin{block}{Phase field}
+%\begin{block}{Phase field}%
 
-Interface tracking equation:
-\begin{eqnarray}
-\frac{\partial \phi}{\partial t} + \nabla \cdot \phi \textbf{u}
-=
-\nabla \cdot M
-\left( 
-\nabla \phi - 
-  %\underbrace{
-  \frac{\nabla \phi}{|\nabla \phi|} \frac{[1-4(\phi - \phi_0)^2]}{\gamma} 
-  %}_{Force \, term} 
-\right) \nonumber
-\end{eqnarray}
+%\end{block}
 
-Interface location: $ \phi_0 =(\phi_H + \phi_L)/2  $ \\
-Density is a linear interpolation between $\rho_H$ and $\rho_L$:
-\begin{eqnarray}
-\rho = \rho_L +  \frac{\phi - \phi_L}{\phi_H - \phi_L}(\rho_H -\rho_L)  \nonumber
-\end{eqnarray}
-
-`Advection - Diffusion` of  $\phi$ is solved on a separate D2Q9 lattice.% \\ \vspace{1.5em}
-
-\end{block}
-
-\begin{block}{Algorithm: phase-field}
-
-
+%\begin{block}{Algorithm: phase-field}
+\columnbreak 
+\textbf{Phase-field}\\
 \textit{1} Initialize 
-$ \boldsymbol{h}(\textbf{x}, t) $ \\ \vspace{2.5em}
+$ \boldsymbol{h}(\textbf{x}, t) $, \\ \vspace{1.em}
 %\pause
 
-\textit{2} Use $ \boldsymbol{u}$ from hydrodynamics  \\ \vspace{2.5em}
-%$  \phi = \sum_{i=0}^{9} h_i ^{in}(\boldsymbol{x},t) $ \\ \vspace{2.5em}%
-
+\textit{2} % Use $ \boldsymbol{u}$ from hydrodynamics,  \\ \vspace{1.em}
+Compute $ \phi = \sum_{\alpha} h_{\alpha}(\boldsymbol{x},t) $ \\ \vspace{1.em}%
 
 
 \textit{3} Compute \linebreak
 $\boldsymbol{\tilde{\Upsilon}}^{\phi}(\boldsymbol{x},t)
-=\mathbb{N}\mathbb{M}\textbf{f}(\boldsymbol{x},t)$,
+=\mathbb{N}\mathbb{M}\textbf{h}(\boldsymbol{x},t)$,
 \hspace{1em}
 $\boldsymbol{\tilde{\Upsilon}}^{\phi,eq}(\boldsymbol{x},t)=$..., \hspace{1em}
-$\tilde{\textbf{F}}^{\phi}(\boldsymbol{x},t)=$...
-\\ \vspace{2.5em}
+$\tilde{\textbf{F}}^{\phi}(\boldsymbol{x},t)=$...,
+\\ \vspace{1.em}
  
 %%\pause
-\textit{4} Collision 
+\textit{4} Collision \linebreak
 %$ h_i ^{out}(\boldsymbol{x},t) = h_i^{in}(\boldsymbol{x},t) - \frac{1}{\tau_T} \bigg[ h_i^{in}(\boldsymbol{x},t) - h_i^{eq}(\boldsymbol{x},t) \bigg] + F_i^{\phi}(\boldsymbol{x}, t ) $
 $ \boldsymbol{\tilde{\Upsilon}}^{\phi,*}(\textbf{x}, t) = 
 (\mathbbm{1} - \mathbb{S}^{\phi}) \boldsymbol{\tilde{\Upsilon}}^\phi + \mathbb{S}^{\phi} \boldsymbol{\tilde{\Upsilon}}^{\phi, eq}  + 
 (\mathbbm{1} - \mathbb{S}^{\phi}/2)
-\tilde{\textbf{F}}^\phi .
+\tilde{\textbf{F}}^\phi,
 $ 
-\\ \vspace{2.5em}
+\\ \vspace{1.em}
 %
 \textit{5} Streaming  \\
 $
 \boldsymbol{h}(\textbf{x} + \textbf{e}\delta t, t + \delta t ) 
 = \mathbb{M}^{-1} \mathbb{N}^{-1} \boldsymbol{\tilde{\Upsilon}}^{\phi,*}(\textbf{x}, t).
-$  \\ \vspace{2.5em}
+$
+%\end{block}
+\end{multicols}
 \end{block}
-
 \end{column}
 \end{columns}
 
 \begin{columns}[T]
-\begin{column}{.46\textwidth}
+\begin{column}{.465\textwidth}
 
 \begin{block}{Benchmarks}
 %How SHS works $ \backsim $ two phase Coutte flow
@@ -393,20 +444,29 @@ In the case of a water-air interface, $\mu^*_{water-air}=54.6$, thus the common 
 %A similar conclusion can be drawn from Choi et al. \cite{Choi2003} who showed experimentally that the apparent slip length increases approximately linearly with shear rate.
 \end{multicols}
 
-\begin{figure}[H]
-   \includegraphics[width= 0.8 \textwidth]{Images/kanal_z_u_profile.jpg} 
-   \caption{Dimensionless velocity profile at the center of the air pocket $\rho^∗ = \mu^∗ = 54:6$ }
-\end{figure}
+\begin{multicols}{2}
 
+\begin{figure}[H]
+   \includegraphics[width= 1 \textwidth]{Images/kanal_z_u_profile.jpg} 
+   \caption{Dimensionless velocity profile at the center of the air pocket $\rho^∗ = \mu^∗ = 54:6$ }
+   \label{fig:kanal_z_u_profile}
+\end{figure}
+\columnbreak 
+A typical geometry of a simple, periodic super hydrophobic surface is shown in \cref{fig:kanal_z_u_profile}. 
+Gentle filling of the geometry with water keeps the air bubble entrapped between solid posts (grey). 
+Finally, the flow can be driven by gravity or a pressure difference.
+Having compared the velocity profiles above the entrapped air, we conclude that our results are in agreement with the ones obtained by other researchers.
+\end{multicols}
 \end{block}
 \end{column}
 
 
 \begin{column}{.46\textwidth}
-
-
 \begin{block}{Summary}
-In this contribution, we present a conservative, phase-field model for simulation of immiscible multiphase flows using an incompressible, velocity based Cascaded Lattice Boltzmann Method (CLBM). We introduce improvements to the LB equations for interface tracking and incompressible hydrodynamics, by transforming the operations into the central moment space. The relaxation of central moments is defined in a reference frame moving with the fluid, while the previously used multiple-relaxation time scheme performs collision in a fixed reference frame. As a consequence, CLBM enhances Galilean invariance and stability of the method. As a study case, we present a simulation of a SHS.
+In this work, a phase-field LBM was proposed with an implementation of the collision routine in the central moment space, 
+which improves the model performance in terms of both Galilean invariance and discretization errors. 
+Presented model have been successfully validated against both analytical and experimental benchmarks.
+Additionally, the LBM is relatively easy in implementation and able to handle complex geometries such as porous media or rough surface. Computations are performed locally, thus the algorithm can be parallelized in a straightforward manner.  
 
 \begin{center}
 \textbf{Treatment of an air-water interface}
@@ -445,15 +505,10 @@ In this contribution, we present a conservative, phase-field model for simulatio
 \end{column}
 \end{columns}
 
-
-
-
-
-
-\begin{block}{References}
-\bibliographystyle{sbc}
-\bibliography{library.bib}
-\end{block}
+%\begin{block}{References}
+%\bibliographystyle{sbc}
+%\bibliography{library.bib}
+%\end{block}
 
 \end{frame}
 \end{document}
