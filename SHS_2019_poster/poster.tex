@@ -1,3 +1,5 @@
+% USE XeLaTeX
+
 \documentclass{beamer}
 %% Possible paper sizes: a0, a0b, a1, a2, a3, a4.
 %% Possible orientations: portrait, landscape
@@ -77,7 +79,7 @@
    \end{actionenv}}
    
 
-\author[ggruszczynski@meil.pw.edu.pl]{G. Gruszczyński, Ł. Łaniewski-Wołłk, J. Szumbarski 
+\author[ggruszczynski@meil.pw.edu.pl]{G. Gruszczyński, Ł. Łaniewski-Wołłk%, J. Szumbarski 
 %\\ \texttt{sam@somewhere.edu}
 }
 %\author[sam \& joey]
@@ -113,7 +115,7 @@ Using Lattice Boltzmann method}
          \vskip1cm
     \end{column}
     \begin{column}{.15\linewidth}
-    	\vskip 2.1cm
+        \vskip 2.1cm
         \begin{flushleft}
         \hspace*{6.5em}
         \includegraphics[width=0.6\linewidth]{Images/LOGO/symbol-PW.pdf}
@@ -138,18 +140,18 @@ Using Lattice Boltzmann method}
 Super Hydrophobic Surfaces (SHS) have been of interest to researchers for many years, because of their ability to reduce drag and maintain the surface to be dry and clean, and a large variety of methods have been applied to study their phenomena. 
 The lattice Boltzmann method, thanks to its mesoscopic nature is a suitable candidate to simulate the intermolecular interactions responsible for the interfacial flows in a microscale. 
 In this contribution, we present a conservative, phase-field model for simulation of immiscible multiphase flows using an incompressible, velocity based Cascaded Lattice Boltzmann Method. 
-As a study case, we present a simulation of a SHS.
+As a study case, we present a simulation of an SHS.
 %Generally, the super hydrophobic effect comes from both chemical interaction and surface shape in a microscale.
-%The principle of work is based on the fact, that the tiny air-bubbles are entrapped into the microstructure of the surface being in the contact with fluids which is  sliding on them. 
+%The principle of work is based on the fact, that the tiny air-bubbles are entrapped into the microstructure of the surface being in the contact with fluids which is sliding on them. 
 %Unfortunately, usage of SHS depends on the flow condition. 
 %It may happen, that too fast flow or improper shape of the surface would cause the air-bubbles to wash out and to loose the desired properties. \\
 
 %Multiphase flows are challenging due to complex dynamics involved in phase change or segregation and in the tracking of the interface between different fluids. 
 %The lattice Boltzmann method, thanks to its mesoscopic nature is a suitable candidate to simulate the intermolecular interactions responsible for the interfacial flows in a microscale. 
-%Additionally, the LBM is easy in implementation and in ability of handling complex geometries such as porous media or surface roughness. 
+%Additionally, the LBM is easy in implementation and inability of handling complex geometries such as porous media or surface roughness. 
 %Computations are performed locally, thus the algorithm can be parallelized in a straightforward manner. 
-%These features resulted in raising popularity and a commercial success of the method. 
-%Application of LB method to the simulation of SHS is a recent research field. 
+%These features resulted in rising popularity and commercial success of the method. 
+%Application of the LB method to the simulation of SHS is a recent research field. 
 \end{block}
 
 \end{column}
@@ -172,14 +174,14 @@ As a study case, we present a simulation of a SHS.
 \end{figure}
 \end{multicols}
 Generally, the super hydrophobic effect comes from both chemical interaction and surface shape in a microscale.
-The principle of work is based on the fact, that the tiny air-bubbles are entrapped into the microstructure of the surface being in the contact with fluids which is  sliding on them. 
+The principle of work is based on the fact, that the tiny air-bubbles are entrapped into the microstructure of the surface being in the contact with fluids which is sliding on them. 
 Unfortunately, usage of SHS depends on the flow condition. 
 It may happen, that too fast flow or improper shape of the surface would cause the air-bubbles to wash out and to loose the desired properties.\\
-Chemical surface treatment can results in contact angles up to $120^\circ$.% \cite{Blossey2003}. 
+Chemical surface treatment can results in contact angles up to 120$^\circ$. \,% \cite{Blossey2003}. 
 Higher values observed in a macro scale can be achieved only by additional micro roughing of the surface.
 %The super hydrophobic effect origins from both surface shape and coating (chemical composition).
 %Generally, the super hydrophobic effect comes from both chemical interaction and surface shape in a microscale. 
-%The principle of work is based on the fact, that the tiny air-bubbles are entrapped into the microstructure of the surface being in the contact with fluids which is  sliding on them. Unfortunately, usage of SHS depends on the flow condition. 
+%The principle of work is based on the fact, that the tiny air-bubbles are entrapped into the microstructure of the surface being in the contact with fluids which is sliding on them. Unfortunately, usage of SHS depends on the flow condition. 
 %It may happen, that too fast flow or improper shape of the surface would cause the air-bubbles to wash out and to loose the desired properties. \\
 \end{block}
 
@@ -215,15 +217,15 @@ We simulate an incompressible, non-miscible, multiphase flow.
 The continuity and momentum equations are,
 \begin{eqnarray}  
 \left\{
-	\begin{array}{ll}
+    \begin{array}{ll}
 \frac{\partial \rho}{\partial t} + \nabla \cdot \rho \textbf{u} = 0 \\
 \rho\left( \frac{\partial \textbf{u} }{\partial t} + \textbf{u} \cdot \nabla \textbf{u}\right) = -\nabla p + \nabla \cdot (\mu[ \nabla \textbf{u} + (\nabla \textbf{u})^\top]) + \textbf{F}_s + \textbf{F}_b .
-	\end{array}\nonumber 
+    \end{array}\nonumber 
 \right.
 \end{eqnarray}
 Forcing terms are given as,
 \begin{eqnarray}  
-     \boldsymbol{F}_s = \mu_{\phi}\nabla \phi        		 \hspace{1.5em};\hspace{1.5em} 
+     \boldsymbol{F}_s = \mu_{\phi}\nabla \phi                 \hspace{1.5em};\hspace{1.5em} 
      \boldsymbol{F}_b = [G_X, G_Y]^\top . \nonumber
 \end{eqnarray} 
 
@@ -465,7 +467,7 @@ Having compared the velocity profiles above the entrapped air, we conclude that 
 \begin{block}{Summary}
 In this work, a phase-field LBM was proposed with an implementation of the collision routine in the central moment space, 
 which improves the model performance in terms of both Galilean invariance and discretization errors. 
-Presented model have been successfully validated against both analytical and experimental benchmarks.
+Presented model has been successfully validated against both analytical and experimental benchmarks.
 Additionally, the LBM is relatively easy in implementation and able to handle complex geometries such as porous media or rough surface. Computations are performed locally, thus the algorithm can be parallelized in a straightforward manner.  
 
 \begin{center}
